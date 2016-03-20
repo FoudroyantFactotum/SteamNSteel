@@ -121,6 +121,8 @@ public final class ModBlock
         GameRegistry.registerTileEntity(PipeRedstoneValveTE.class, getTEName(PipeRedstoneValveBlock.NAME));
         GameRegistry.registerTileEntity(PipeJunctionTE.class, getTEName(PipeJunctionBlock.NAME));
         GameRegistry.registerTileEntity(RemnantRuinPillarTE.class, getTEName(RemnantRuinPillarBlock.NAME));
+
+        GameRegistry.registerTileEntity(SpiderFactoryTE.class, getTEName(SpiderFactoryBlock.NAME));
     }
 
     private static String getTEName(String name) { return "tile." + name;}
@@ -171,6 +173,8 @@ public final class ModBlock
         GameRegistry.registerBlock(remnantRuinWall, RemnantRuinWallBlock.NAME);
         GameRegistry.registerBlock(remnantRuinIronBars, RemnantRuinIronBarsBlockItem.class, RemnantRuinIronBarsBlock.NAME);
         GameRegistry.registerBlock(blockConcrete, ConcreteBlockItem.class, ConcreteBlock.NAME);
+
+        GameRegistry.registerBlock(spiderFactory, SpiderFactoryBlock.NAME);
 
         //Compat
         TileEntity.addMapping(RemnantRuinChestTE.class, "tile.chestPlotonium");

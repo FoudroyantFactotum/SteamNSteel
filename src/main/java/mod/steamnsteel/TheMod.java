@@ -71,6 +71,7 @@ public class TheMod
 
         ModItem.init();
         ModBlock.init();
+        ModEntity.init();
         ModBlockParts.init();
         Proxies.render.preInit();
     }
@@ -111,5 +112,12 @@ public class TheMod
     @Mod.EventHandler
     public void onMissingMappings(FMLMissingMappingsEvent event) {
         ModBlock.remapMissingMappings(event.get());
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent e)
+    {
+        e.registerServerCommand(new CommandSpawnEntity());
+        e.registerServerCommand(new CommandCreateSwarm());
     }
 }

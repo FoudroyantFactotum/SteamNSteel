@@ -51,6 +51,7 @@ public class ClientRenderProxy extends CommonRenderProxy
     public void preInit()
     {
         registerBlocksItemModels();
+        registerEntityRenderers();
         registerItemRenderers();
 
         registerConnectedTextures();
@@ -68,6 +69,26 @@ public class ClientRenderProxy extends CommonRenderProxy
     {
         PCTModelLoader.instance.registerTexture("ruinWall", new RemnantRuinWallTexture());
         PCTModelLoader.instance.registerTexture("ruinFloor", new RemnantRuinFloorSideTexture());
+    }
+
+    @Override
+    public void spawnParticle(String name, World world, double x, double y, double z, double motionX, double motionY, double motionZ, float scale)
+    {
+        //Similar to spawnParticle in world but with support for custom particles and additional details for vanilla
+        EntityFX entityFX = null;
+        if (name.equals("steam"))
+        {
+            entityFX = new SteamParticle(world, x, y, z, motionX, motionY, motionZ, scale);
+        }
+        else if (name.equals("smoke"))
+        {
+            entityFX = new EntitySmokeFX(world, x, y, z, motionX, motionY, motionZ, scale);
+        }
+
+        if (entityFX != null)
+        {
+            Minecraft.getMinecraft().effectRenderer.addEffect(entityFX);
+        }
     }
 
     @Override
@@ -205,6 +226,7 @@ public class ClientRenderProxy extends CommonRenderProxy
         ClientRegistry.bindTileEntitySpecialRenderer(BoilerTE.class, STESR);
         ClientRegistry.bindTileEntitySpecialRenderer(BallMillTE.class, new OgexStructureTESR());
         ClientRegistry.bindTileEntitySpecialRenderer(BlastFurnaceTE.class, STESR);
+        ClientRegistry.bindTileEntitySpecialRenderer(SpiderFactoryTE.class, STESR);
     }
 
     private void registerEventHandlers() {

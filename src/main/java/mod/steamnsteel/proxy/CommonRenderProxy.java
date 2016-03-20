@@ -20,4 +20,5 @@ public class CommonRenderProxy
 {
     public void preInit() { }
     public void init() { }
+    public void spawnParticle(String name, World world, double x, double y, double z, double motionX, double motionY, double motionZ, float scale) { }
 }
