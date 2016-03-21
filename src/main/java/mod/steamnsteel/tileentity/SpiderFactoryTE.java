@@ -1,13 +1,16 @@
 package mod.steamnsteel.tileentity;
 
+import com.foudroyantfactotum.tool.structure.registry.StructureDefinition;
+import mod.steamnsteel.tileentity.structure.SteamNSteelStructureTE;
 import mod.steamnsteel.utility.log.Logger;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.MathHelper;
 
-public class SpiderFactoryTE extends SteamNSteelTE
+public class SpiderFactoryTE extends SteamNSteelStructureTE implements ITickable
 {
     public static final String CURR_HEALTH = "health";
-    private static final String IS_SLAVE = "isSlave";
 
     public static final int MAX_HEALTH = 50;
 
@@ -21,7 +24,6 @@ public class SpiderFactoryTE extends SteamNSteelTE
     public static final int LOCKDOWN_COOLDOWN = 600;
 
     private float health = 50;
-    private boolean isSlave = false;
 
     //Repair values
     private int repairTime = -1;
@@ -30,12 +32,21 @@ public class SpiderFactoryTE extends SteamNSteelTE
     //Lockdown values
     private int lockdownTime = -1;
 
+    public SpiderFactoryTE()
+    {
+        //noop
+    }
+
+    public SpiderFactoryTE(StructureDefinition sd, EnumFacing orientation, boolean mirror)
+    {
+        super(sd, orientation, mirror);
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
 
         health = nbt.getFloat(CURR_HEALTH);
-        isSlave = nbt.getBoolean(IS_SLAVE);
     }
 
     @Override
@@ -43,13 +54,10 @@ public class SpiderFactoryTE extends SteamNSteelTE
         super.writeToNBT(nbt);
 
         nbt.setFloat(CURR_HEALTH, health);
-        nbt.setBoolean(IS_SLAVE, isSlave);
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
-
+    public void update() {
         if (!worldObj.isRemote) {
             //Repair
             if (repairTime > -1) {
@@ -76,17 +84,13 @@ public class SpiderFactoryTE extends SteamNSteelTE
 
             if (repairTime == -1 && health < (MAX_HEALTH / 2)) {
                 //Begin repair phase
-                healthToRepair = (MAX_HEALTH / 100F) * (REPAIR_AMOUNT_PERCENT * worldObj.difficultySetting.getDifficultyId());
+                healthToRepair = (MAX_HEALTH / 100F) * (REPAIR_AMOUNT_PERCENT * worldObj.getDifficulty().getDifficultyId());
                 repairTime = 0;
                 //worldObj.playSoundEffect(xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F, TheMod.MOD_ID + ":block.welding", 1.0F, worldObj.rand.nextFloat()  * 0.1F + 0.5F);
                 //Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147675_a(new ResourceLocation(TheMod.MOD_ID, "block.welding"), xCoord + 0.5F, yCoord + 0.5F, zCoord + 0.5F));
 
-                Logger.info("Beginning repair phase for factory (%s, %s, %s) to repair %s health over %s ticks", xCoord, yCoord, zCoord, healthToRepair, repairTime);
+                Logger.info("Beginning repair phase for factory %s to repair %s health over %s ticks", pos, healthToRepair, repairTime);
             }
         }
-    }
-
-    public boolean isSlave() {
-        return isSlave;
     }
 }

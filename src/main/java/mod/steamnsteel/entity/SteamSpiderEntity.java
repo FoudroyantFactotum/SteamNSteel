@@ -11,6 +11,7 @@ import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -57,9 +58,9 @@ public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAtt
     }
 
     @Override
-    protected boolean isAIEnabled()
+    public boolean isAIDisabled()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -83,7 +84,7 @@ public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAtt
             double z = posZ + (radius * Math.sin(rot));
             if (isInWater())
             {
-                worldObj.spawnParticle("bubble", x, posY + 0.61, z, 0, 0, 0);
+                worldObj.spawnParticle(EnumParticleTypes.WATER_BUBBLE, x, posY + 0.61, z, 0, 0, 0);
             }
             else
             {
@@ -100,9 +101,9 @@ public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAtt
     }
 
     @Override
-    protected Entity findPlayerToAttack()
+    public EntityLivingBase getAttackTarget()
     {
-        EntityPlayer entityplayer = this.worldObj.getClosestVulnerablePlayerToEntity(this, 16.0D);
+        EntityPlayer entityplayer = this.worldObj.getClosestPlayerToEntity(this, 16.0D);
         return entityplayer != null && this.canEntityBeSeen(entityplayer) ? entityplayer : null;
     }
 

@@ -3,6 +3,7 @@ package mod.steamnsteel.client.renderer.entity;
 import mod.steamnsteel.TheMod;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,9 +13,9 @@ public class SteamNSteelLivingRender extends RenderLiving
     private static final String TEXTURE_LOCATION = "textures/models/";
     private final ResourceLocation texture;
 
-    public SteamNSteelLivingRender(ModelBase model, String name, float shadowSize)
+    public SteamNSteelLivingRender(RenderManager rendermanagerIn, ModelBase modelbaseIn, String name, float shadowsizeIn)
     {
-        super(model, shadowSize);
+        super(rendermanagerIn, modelbaseIn, shadowsizeIn);
         this.texture = getResourceLocation(name);
     }
 

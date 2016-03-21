@@ -16,6 +16,8 @@
 
 package mod.steamnsteel.proxy;
 
+import net.minecraft.world.World;
+
 public class CommonRenderProxy
 {
     public void preInit() { }

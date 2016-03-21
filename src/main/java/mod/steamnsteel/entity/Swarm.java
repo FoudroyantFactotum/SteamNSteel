@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2014 Rosie Alexander and Scott Killen.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ */
 package mod.steamnsteel.entity;
 
 import com.google.common.collect.HashMultiset;
@@ -6,8 +21,6 @@ import com.google.common.collect.Multisets;
 import mod.steamnsteel.utility.gson.Exclude;
 import mod.steamnsteel.utility.position.ChunkBlockCoord;
 import mod.steamnsteel.utility.position.ChunkCoord;
-import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +29,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +63,7 @@ public class Swarm<T extends EntityLiving & ISwarmer>
     public void update(int tickCounter)
     {
         @SuppressWarnings("unchecked")
-        List<EntityPlayer> playerList = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(
+        List<EntityPlayer> playerList = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.fromBounds(
                 homeChunkCoord.getX(), homeBlockCoord.getY() - 16, homeChunkCoord.getZ(), homeChunkCoord.getX() + 16,
                 homeBlockCoord.getY() + 16, homeChunkCoord.getZ() + 16));
 
@@ -58,8 +72,8 @@ public class Swarm<T extends EntityLiving & ISwarmer>
             HashMultiset<String> playersToAdd = HashMultiset.create();
             //Increase threat count for players in home radius
             for (EntityPlayer player : playerList) {
-                playersToAdd.add(player.getCommandSenderName());
-                changeThreatCount(player.getCommandSenderName(), 1);
+                playersToAdd.add(player.getName());
+                changeThreatCount(player.getName(), 1);
             }
             //Decrease threat count for players no longer in home area
             for (String playerName : threatCount.elementSet()) {
@@ -220,15 +234,11 @@ public class Swarm<T extends EntityLiving & ISwarmer>
     public void buildSwarmEntitiesList()
     {
         @SuppressWarnings("unchecked")
-        List<T> entityList = world.selectEntitiesWithinAABB(entityClass, AxisAlignedBB.getBoundingBox(homeChunkCoord.getX(), homeBlockCoord.getY(), homeChunkCoord.getZ(),
-                homeChunkCoord.getX() + 16, homeBlockCoord.getY() + 16, homeChunkCoord.getZ() + 16), new IEntitySelector()
-        {
-            @Override
-            public boolean isEntityApplicable(Entity entity)
-            {
-                return ((ISwarmer)entity).getSwarm() == null;
-            }
-        });
+        List<T> entityList = world.getEntitiesWithinAABB(entityClass, AxisAlignedBB.fromBounds(homeChunkCoord.getX(), homeBlockCoord.getY(), homeChunkCoord.getZ(),
+                homeChunkCoord.getX() + 16, homeBlockCoord.getY() + 16, homeChunkCoord.getZ() + 16),
+                entity -> entity.getSwarm() == null
+        );
+
         swarmerEntities.addAll(entityList);
     }
 }

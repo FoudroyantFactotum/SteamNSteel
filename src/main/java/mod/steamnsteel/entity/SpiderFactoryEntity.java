@@ -3,8 +3,8 @@ package mod.steamnsteel.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class SpiderFactoryEntity extends EntityMob {
 
@@ -14,7 +14,7 @@ public class SpiderFactoryEntity extends EntityMob {
     public SpiderFactoryEntity(World p_i1738_1_) {
         super(p_i1738_1_);
         setSize(0.8F, 1.5F);
-        setRotationAndSize(ForgeDirection.EAST);
+        setRotationAndSize(EnumFacing.EAST);
     }
 
     @Override
@@ -28,9 +28,9 @@ public class SpiderFactoryEntity extends EntityMob {
     }
 
     @Override
-    protected boolean isAIEnabled()
+    public boolean isAIDisabled()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class SpiderFactoryEntity extends EntityMob {
     @Override
     protected void entityInit() {
         super.entityInit();
-        setRotationAndSize(ForgeDirection.EAST);
+        setRotationAndSize(EnumFacing.EAST);
     }
 
-    private void setRotationAndSize(ForgeDirection dir) {
+    private void setRotationAndSize(EnumFacing dir) {
         //TODO this kinda needs to be fixed :/
 /*        this.boundingBox.maxX = this.boundingBox.minX + (width * (dir.offsetX + 1));
         this.boundingBox.maxZ = this.boundingBox.minZ + (width * (dir.offsetZ + 1));

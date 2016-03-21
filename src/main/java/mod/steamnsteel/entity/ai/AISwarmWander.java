@@ -69,7 +69,7 @@ public class AISwarmWander<T extends EntityCreature & ISwarmer> extends AISwarmB
             //PathEntity path = entity.getNavigator().getPathToXYZ(x, y, z);
             //if (path != null)
             //{
-            return Vec3.createVectorHelper(x, y, z);
+            return new Vec3(x, y, z);
             //}
 //        }
 //        return null;

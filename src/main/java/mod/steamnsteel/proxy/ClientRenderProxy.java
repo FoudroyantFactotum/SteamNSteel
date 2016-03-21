@@ -20,6 +20,7 @@ import com.foudroyantfactotum.tool.structure.renderer.StructureTESR;
 import mod.steamnsteel.TheMod;
 import mod.steamnsteel.block.resource.structure.RemnantRuinIronBarsBlock.IronBarsTextures;
 import mod.steamnsteel.client.codemodel.PipeModel;
+import mod.steamnsteel.client.fx.SteamParticle;
 import mod.steamnsteel.client.model.opengex.OpenGEXModelLoader;
 import mod.steamnsteel.client.model.pct.PCTModelLoader;
 import mod.steamnsteel.client.renderer.tileentity.LargeFanTESR;
@@ -28,13 +29,17 @@ import mod.steamnsteel.library.ModBlock;
 import mod.steamnsteel.library.ModItem;
 import mod.steamnsteel.texturing.wall.RemnantRuinFloorSideTexture;
 import mod.steamnsteel.texturing.wall.RemnantRuinWallTexture;
+import mod.steamnsteel.tileentity.SpiderFactoryTE;
 import mod.steamnsteel.tileentity.structure.BallMillTE;
 import mod.steamnsteel.tileentity.structure.BlastFurnaceTE;
 import mod.steamnsteel.tileentity.structure.BoilerTE;
 import mod.steamnsteel.tileentity.structure.LargeFanTE;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -51,7 +56,6 @@ public class ClientRenderProxy extends CommonRenderProxy
     public void preInit()
     {
         registerBlocksItemModels();
-        registerEntityRenderers();
         registerItemRenderers();
 
         registerConnectedTextures();
@@ -82,7 +86,7 @@ public class ClientRenderProxy extends CommonRenderProxy
         }
         else if (name.equals("smoke"))
         {
-            entityFX = new EntitySmokeFX(world, x, y, z, motionX, motionY, motionZ, scale);
+            //entityFX = new EntitySmokeFX(world, x, y, z, motionX, motionY, motionZ, scale);
         }
 
         if (entityFX != null)
@@ -92,11 +96,13 @@ public class ClientRenderProxy extends CommonRenderProxy
     }
 
     @Override
-    public void init() {
+    public void init()
+    {
         registerTESRs();
     }
 
-    private void registerBlocksItemModels() {
+    private void registerBlocksItemModels()
+    {
         //Ores
         registerBlockItemModel(ModBlock.oreCopper);
         registerBlockItemModel(ModBlock.oreNiter);
@@ -143,14 +149,16 @@ public class ClientRenderProxy extends CommonRenderProxy
         registerMetadataBlockModel(ModBlock.blockConcrete, 5, "wetness", "5");
     }
 
-    private void registerIronBarsModel(Block block) {
+    private void registerIronBarsModel(Block block)
+    {
         for (int i = 0; i < IronBarsTextures.VALUES.length; ++i)
         {
             registerMetadataBlockModel(block, i, "type", IronBarsTextures.VALUES[i].getName());
         }
     }
 
-    private void registerMetadataBlockModel(Block block, int meta, String discriminator, String discriminatorValue) {
+    private void registerMetadataBlockModel(Block block, int meta, String discriminator, String discriminatorValue)
+    {
         final String resourceName = block.getUnlocalizedName().substring(5);
 
         ModelLoader.setCustomModelResourceLocation(
@@ -160,7 +168,8 @@ public class ClientRenderProxy extends CommonRenderProxy
         );
     }
 
-    private void registerBlockItemModel(Block block) {
+    private void registerBlockItemModel(Block block)
+    {
         final String resourceName = block.getUnlocalizedName().substring(5);
         ModelLoader.setCustomModelResourceLocation(
                 Item.getItemFromBlock(block),
@@ -169,7 +178,8 @@ public class ClientRenderProxy extends CommonRenderProxy
         );
     }
 
-    private void registerItemModel(Item item) {
+    private void registerItemModel(Item item)
+    {
         final String resourceName = item.getUnlocalizedName().substring(5);
         ModelLoader.setCustomModelResourceLocation(
                 item,
@@ -229,7 +239,8 @@ public class ClientRenderProxy extends CommonRenderProxy
         ClientRegistry.bindTileEntitySpecialRenderer(SpiderFactoryTE.class, STESR);
     }
 
-    private void registerEventHandlers() {
+    private void registerEventHandlers()
+    {
         //FIXME: The Block Parts are not currently working.
         //MinecraftForge.EVENT_BUS.register(BlockHighlightEventListener.getInstance());
         MinecraftForge.EVENT_BUS.register(this);

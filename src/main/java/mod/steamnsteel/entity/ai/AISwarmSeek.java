@@ -68,6 +68,10 @@ public class AISwarmSeek<T extends EntityLiving & ISwarmer> extends AISwarmBase<
     public void updateTask()
     {
         SwarmManager swarmManager = SwarmManager.swarmManagers.get(entity.worldObj);
+
+        if (swarmManager == null)
+            return;
+
         Swarm<T> swarm = swarmManager.getNearestSwarmToEntity(entity, (Class<T>) entity.getClass(), currRange); //Cast cause yay generics
         if (swarm != null)
         {

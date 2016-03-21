@@ -2,8 +2,8 @@ package mod.steamnsteel.entity.ai;
 
 import mod.steamnsteel.entity.ISwarmer;
 import mod.steamnsteel.utility.position.ChunkCoord;
-import mod.steamnsteel.utility.position.WorldBlockCoord;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 
 public class AISwarmReturnHome<T extends EntityLiving & ISwarmer> extends AISwarmBase<T>
@@ -47,7 +47,7 @@ public class AISwarmReturnHome<T extends EntityLiving & ISwarmer> extends AISwar
     public void startExecuting()
     {
         entity.setAttackTarget(null);
-        WorldBlockCoord worldBlockCoord = entity.getSwarm().getHomeChunkCoord().localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
+        BlockPos worldBlockCoord = entity.getSwarm().getHomeChunkCoord().localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
         entity.getNavigator().tryMoveToXYZ(worldBlockCoord.getX(), worldBlockCoord.getY(), worldBlockCoord.getZ(), speed);
     }
 
@@ -58,7 +58,7 @@ public class AISwarmReturnHome<T extends EntityLiving & ISwarmer> extends AISwar
         if (entity.getNavigator().noPath())
         {
             //This will basically only be called if getting to the main home position failed so find random point around
-            WorldBlockCoord worldBlockCoord = entity.getSwarm().getHomeChunkCoord().localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
+            BlockPos worldBlockCoord = entity.getSwarm().getHomeChunkCoord().localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
             entity.getNavigator().tryMoveToXYZ(worldBlockCoord.getX() + MathHelper.getRandomIntegerInRange(entity.getRNG(), -4, 4),
                     worldBlockCoord.getY(), worldBlockCoord.getZ() + MathHelper.getRandomIntegerInRange(entity.getRNG(), -4, 4), speed);
         }

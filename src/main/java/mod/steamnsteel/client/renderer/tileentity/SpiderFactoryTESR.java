@@ -1,14 +1,6 @@
 package mod.steamnsteel.client.renderer.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mod.steamnsteel.block.machine.SpiderFactoryBlock;
-import mod.steamnsteel.client.renderer.model.SpiderFactoryModel;
-import mod.steamnsteel.tileentity.SpiderFactoryTE;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-
+/*
 @SideOnly(Side.CLIENT)
 public class SpiderFactoryTESR extends SteamNSteelTESR
 {
@@ -32,3 +24,4 @@ public class SpiderFactoryTESR extends SteamNSteelTESR
         GL11.glPopMatrix();
     }
 }
+*/

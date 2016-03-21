@@ -2,9 +2,10 @@ package mod.steamnsteel.entity.ai;
 
 import mod.steamnsteel.entity.ISwarmer;
 import mod.steamnsteel.utility.position.ChunkCoord;
-import mod.steamnsteel.utility.position.WorldBlockCoord;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+
 import java.util.List;
 
 public class AISwarmDefendHome<T extends EntityCreature & ISwarmer> extends AISwarmTarget<T>
@@ -31,7 +32,7 @@ public class AISwarmDefendHome<T extends EntityCreature & ISwarmer> extends AISw
         List<EntityPlayer> playerList = getNearbyThreats(entity.getSwarm().getHomeChunkCoord(), range);
         if (playerList != null) {
             ChunkCoord homeChunk = entity.getSwarm().getHomeChunkCoord();
-            WorldBlockCoord worldBlockCoord = homeChunk.localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
+            BlockPos worldBlockCoord = homeChunk.localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
 
             //Get closest player. TODO should we have better threat determining? Look in Swarm
             EntityPlayer closestPlayer = null;

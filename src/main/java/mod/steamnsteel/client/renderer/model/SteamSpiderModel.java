@@ -1,7 +1,5 @@
 package mod.steamnsteel.client.renderer.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mod.steamnsteel.entity.SteamSpiderEntity;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -11,14 +9,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.obj.Face;
-import net.minecraftforge.client.model.obj.GroupObject;
-import net.minecraftforge.client.model.obj.WavefrontObject;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 //This has to extend ModelBase so we can use RenderLivingEntity without attempting to roll our own.
-@SideOnly(Side.CLIENT)
+/*@SideOnly(Side.CLIENT)
 public class SteamSpiderModel extends ModelBase
 {
     private static final ResourceLocation MODEL = SteamNSteelModel.getResourceLocation(SteamNSteelModel.getModelPath(SteamSpiderEntity.NAME));
@@ -155,3 +151,4 @@ public class SteamSpiderModel extends ModelBase
         }
     }
 }
+*/

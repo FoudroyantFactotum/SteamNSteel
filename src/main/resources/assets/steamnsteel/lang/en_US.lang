@@ -47,6 +47,7 @@ tile.steamnsteel:ssBallMill.name=Ball Mill
 tile.steamnsteel:ssBlastFurnace.name=Blast Furnace
 tile.steamnsteel:ssBoiler.name=Boiler
 tile.steamnsteel:fanLarge.name=Your Largest Fan
+tile.steamnsteel:spiderFactory.name=Spider Factory
 
 # Config file comments
 config.steamnsteel:genCopper=Should copper ore be generated in new chunks?

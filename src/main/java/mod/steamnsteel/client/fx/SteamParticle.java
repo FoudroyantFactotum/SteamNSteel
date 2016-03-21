@@ -1,11 +1,11 @@
 package mod.steamnsteel.client.fx;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 //TODO optimise into a single render dispatch
 @SideOnly(Side.CLIENT)
@@ -45,7 +45,7 @@ public class SteamParticle extends EntityFX
         }
 
         this.particleScale = this.smokeParticleScale * f6;
-        super.renderParticle(p_70539_1_, p_70539_2_, p_70539_3_, p_70539_4_, p_70539_5_, p_70539_6_, p_70539_7_);
+        super.renderParticle(p_70539_1_.getWorldRenderer(), this, p_70539_2_, p_70539_3_, p_70539_4_, p_70539_5_, p_70539_6_, p_70539_7_);
     }
 
     /**

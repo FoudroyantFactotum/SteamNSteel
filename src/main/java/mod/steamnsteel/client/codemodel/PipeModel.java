@@ -108,6 +108,9 @@ public class PipeModel extends BaseCodeModel
                 final IModel modelCap = procsessModel(loadModel(event.modelLoader, capLocation), flipData);
                 final OBJBakedModel bakedModel = (OBJBakedModel) event.modelRegistry.getObject(mrl);
 
+                if (bakedModel == null)// occurs if no model was loaded for block state
+                    continue;
+
                 IModel model = null;
                 try
                 {

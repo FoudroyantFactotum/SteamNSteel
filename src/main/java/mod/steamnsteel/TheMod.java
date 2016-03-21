@@ -19,13 +19,12 @@ package mod.steamnsteel;
 import com.foudroyantfactotum.tool.structure.StructureRegistry;
 import mod.steamnsteel.api.CraftingManager;
 import mod.steamnsteel.api.SteamNSteelInitializedEvent;
+import mod.steamnsteel.commands.CommandCreateSwarm;
+import mod.steamnsteel.commands.CommandSpawnEntity;
 import mod.steamnsteel.configuration.ConfigurationHandler;
 import mod.steamnsteel.crafting.Recipes;
 import mod.steamnsteel.gui.GuiHandler;
-import mod.steamnsteel.library.ModBlock;
-import mod.steamnsteel.library.ModBlockParts;
-import mod.steamnsteel.library.ModCrafting;
-import mod.steamnsteel.library.ModItem;
+import mod.steamnsteel.library.*;
 import mod.steamnsteel.proxy.Proxies;
 import mod.steamnsteel.world.LoadSchematicFromFileCommand;
 import mod.steamnsteel.world.LoadSchematicFromResourceCommand;
@@ -103,21 +102,20 @@ public class TheMod
     }
 
     @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public void onServerStarting(FMLServerStartingEvent event)
+    {
         event.registerServerCommand(new LoadSchematicFromResourceCommand());
         event.registerServerCommand(new LoadSchematicFromFileCommand());
+
         event.registerServerCommand(new StructureRegistry.CommandReloadStructures());
+
+        event.registerServerCommand(new CommandSpawnEntity());
+        event.registerServerCommand(new CommandCreateSwarm());
     }
 
     @Mod.EventHandler
-    public void onMissingMappings(FMLMissingMappingsEvent event) {
-        ModBlock.remapMissingMappings(event.get());
-    }
-
-    @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent e)
+    public void onMissingMappings(FMLMissingMappingsEvent event)
     {
-        e.registerServerCommand(new CommandSpawnEntity());
-        e.registerServerCommand(new CommandCreateSwarm());
+        ModBlock.remapMissingMappings(event.get());
     }
 }

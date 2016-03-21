@@ -7,6 +7,7 @@ import mod.steamnsteel.utility.position.ChunkBlockCoord;
 import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
@@ -25,7 +26,7 @@ public class CommandCreateSwarm extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender commandSender, String[] args)
+    public void processCommand(ICommandSender commandSender, String[] args) throws PlayerNotFoundException
     {
         int spiderCount = args.length == 1 ? Integer.valueOf(args[0]) : 0;
         SwarmManager swarmManager = SwarmManager.swarmManagers.get(commandSender.getEntityWorld());

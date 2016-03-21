@@ -60,7 +60,10 @@ public class AIRangeBurstAttack<T extends EntityLiving & IRangedAttackMob> exten
     @Override
     public void updateTask()
     {
-        double distanceToTarget = entity.getDistanceSq(attackTarget.posX, attackTarget.boundingBox.minY, attackTarget.posZ);
+        if (entity == null || attackTarget == null || attackTarget.getCollisionBoundingBox() == null)
+            return;
+
+        double distanceToTarget = entity.getDistanceSq(attackTarget.posX, attackTarget.getCollisionBoundingBox().minY, attackTarget.posZ);
         boolean canSee = entity.getEntitySenses().canSee(attackTarget);
 
         seeTime = canSee ? seeTime + 1 : 0;

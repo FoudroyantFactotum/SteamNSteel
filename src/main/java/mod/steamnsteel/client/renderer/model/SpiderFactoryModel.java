@@ -1,14 +1,6 @@
 package mod.steamnsteel.client.renderer.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mod.steamnsteel.entity.SpiderFactoryEntity;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.obj.WavefrontObject;
-import org.lwjgl.opengl.GL11;
-
+/*
 @SideOnly(Side.CLIENT)
 public class SpiderFactoryModel extends SteamNSteelModel {
 
@@ -28,3 +20,4 @@ public class SpiderFactoryModel extends SteamNSteelModel {
         GL11.glDisable(GL11.GL_BLEND);
     }
 }
+*/

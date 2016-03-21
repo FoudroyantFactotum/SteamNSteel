@@ -1,6 +1,5 @@
 package mod.steamnsteel.entity;
 
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import mod.steamnsteel.proxy.Proxies;
 import net.minecraft.entity.EntityLivingBase;
@@ -9,6 +8,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 //NOTE: This is an invisible entity!
 public class SteamProjectileEntity extends EntityThrowable implements IEntityAdditionalSpawnData

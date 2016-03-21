@@ -1,13 +1,13 @@
 package mod.steamnsteel.utility.event;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import mod.steamnsteel.entity.SteamSpiderEntity;
 import mod.steamnsteel.entity.Swarm;
 import mod.steamnsteel.entity.SwarmManager;
 import mod.steamnsteel.utility.position.ChunkBlockCoord;
 import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ServerEventHandler
 {
@@ -16,11 +16,11 @@ public class ServerEventHandler
     {
         if (!event.world.isRemote)
         {
-            SwarmManager swarmManager = (SwarmManager) event.world.perWorldStorage.loadData(SwarmManager.class, "swarms");
+            SwarmManager swarmManager = (SwarmManager) event.world.getPerWorldStorage().loadData(SwarmManager.class, "swarms");
             if (swarmManager == null)
             {
                 swarmManager = new SwarmManager(event.world);
-                event.world.perWorldStorage.setData("swarms", swarmManager);
+                event.world.getPerWorldStorage().setData("swarms", swarmManager);
             }
             else
             {

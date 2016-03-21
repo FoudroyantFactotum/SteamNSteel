@@ -1,9 +1,9 @@
 package mod.steamnsteel.library;
 
-import cpw.mods.fml.common.registry.EntityRegistry;
 import mod.steamnsteel.TheMod;
 import mod.steamnsteel.entity.SteamProjectileEntity;
 import mod.steamnsteel.entity.SteamSpiderEntity;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 @SuppressWarnings("UtilityClass")
 public final class ModEntity

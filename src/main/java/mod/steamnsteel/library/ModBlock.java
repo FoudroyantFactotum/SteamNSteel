@@ -22,10 +22,7 @@ import mod.steamnsteel.TheMod;
 import mod.steamnsteel.block.*;
 import mod.steamnsteel.block.container.RemnantRuinChestBlock;
 import mod.steamnsteel.block.machine.*;
-import mod.steamnsteel.block.machine.structure.FanLargeStructure;
-import mod.steamnsteel.block.machine.structure.SSBallMillStructure;
-import mod.steamnsteel.block.machine.structure.SSBlastFurnaceStructure;
-import mod.steamnsteel.block.machine.structure.SSBoilerStructure;
+import mod.steamnsteel.block.machine.structure.*;
 import mod.steamnsteel.block.resource.ore.*;
 import mod.steamnsteel.block.resource.structure.*;
 import mod.steamnsteel.block.utility.CraftingStationBlock;
@@ -75,6 +72,7 @@ public final class ModBlock
     public static final SteamNSteelStructureBlock ssBlastFurnace = new SSBlastFurnaceStructure();
     public static final SteamNSteelStructureBlock ssBoiler = new SSBoilerStructure();
     public static final SteamNSteelStructureBlock fanLarge = new FanLargeStructure();
+    public static final SteamNSteelStructureBlock spiderFactory = new SpiderFactoryStructure();
 
     public static final SteamNSteelBlock pipe = new PipeBlock();
     public static final SteamNSteelBlock pipeValve = new PipeValveBlock();
@@ -92,7 +90,6 @@ public final class ModBlock
     public static final SteamNSteelOreBlock oreZinc = new ZincOre();
 
     public static final SteamNSteelBlock blockConcrete = new ConcreteBlock();
-
 
     public static final SteamNSteelBlock remnantRuinFloor = new RemnantRuinFloorBlock();
     public static final SteamNSteelBlock remnantRuinWall = new RemnantRuinWallBlock();
@@ -122,7 +119,7 @@ public final class ModBlock
         GameRegistry.registerTileEntity(PipeJunctionTE.class, getTEName(PipeJunctionBlock.NAME));
         GameRegistry.registerTileEntity(RemnantRuinPillarTE.class, getTEName(RemnantRuinPillarBlock.NAME));
 
-        GameRegistry.registerTileEntity(SpiderFactoryTE.class, getTEName(SpiderFactoryBlock.NAME));
+        GameRegistry.registerTileEntity(SpiderFactoryTE.class, getTEName(SpiderFactoryStructure.NAME));
     }
 
     private static String getTEName(String name) { return "tile." + name;}
@@ -140,6 +137,7 @@ public final class ModBlock
         registerStructure(ssBlastFurnace, shapeLI, SSBlastFurnaceStructure.NAME);
         registerStructure(ssBoiler, shapeLI, SSBoilerStructure.NAME);
         registerStructure(fanLarge, structureShape, FanLargeStructure.NAME);
+        registerStructure(spiderFactory, structureShape, SpiderFactoryStructure.NAME);
 
         GameRegistry.registerBlock(pipe, PipeBlock.NAME);
         GameRegistry.registerBlock(pipeValve, PipeValveBlock.NAME);
@@ -174,7 +172,6 @@ public final class ModBlock
         GameRegistry.registerBlock(remnantRuinIronBars, RemnantRuinIronBarsBlockItem.class, RemnantRuinIronBarsBlock.NAME);
         GameRegistry.registerBlock(blockConcrete, ConcreteBlockItem.class, ConcreteBlock.NAME);
 
-        GameRegistry.registerBlock(spiderFactory, SpiderFactoryBlock.NAME);
 
         //Compat
         TileEntity.addMapping(RemnantRuinChestTE.class, "tile.chestPlotonium");
