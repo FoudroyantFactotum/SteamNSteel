@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2014 Rosie Alexander and Scott Killen.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ */
 package mod.steamnsteel.commands;
 
 import mod.steamnsteel.entity.SteamSpiderEntity;
@@ -22,17 +37,21 @@ public class CommandCreateSwarm extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender commandSender)
     {
-        return null;
+        return String.format("/%s [spidercount]", getCommandName());
     }
 
     @Override
     public void processCommand(ICommandSender commandSender, String[] args) throws PlayerNotFoundException
     {
-        int spiderCount = args.length == 1 ? Integer.valueOf(args[0]) : 0;
-        SwarmManager swarmManager = SwarmManager.swarmManagers.get(commandSender.getEntityWorld());
-        EntityPlayer player = getCommandSenderAsPlayer(commandSender);
-        Swarm swarm = new Swarm<SteamSpiderEntity>(commandSender.getEntityWorld(), ChunkCoord.of(player.chunkCoordX, player.chunkCoordZ),
-                ChunkBlockCoord.of(8, MathHelper.floor_double(player.posY), 8), SteamSpiderEntity.class);
+        final int spiderCount = args.length == 1 ? Integer.valueOf(args[0]) : 0;
+        final SwarmManager swarmManager = SwarmManager.swarmManagers.get(commandSender.getEntityWorld());
+        final EntityPlayer player = getCommandSenderAsPlayer(commandSender);
+        final Swarm swarm = new Swarm<SteamSpiderEntity>(
+                commandSender.getEntityWorld(),
+                ChunkCoord.of(player.chunkCoordX, player.chunkCoordZ),
+                ChunkBlockCoord.of(8, MathHelper.floor_double(player.posY), 8),
+                SteamSpiderEntity.class
+        );
 
         for (int i = 0; i < spiderCount; i++)
         {
@@ -41,6 +60,7 @@ public class CommandCreateSwarm extends CommandBase
             spiderEntity.setPosition(player.posX, player.posY, player.posZ);
             commandSender.getEntityWorld().spawnEntityInWorld(spiderEntity);
         }
+
         swarmManager.addSwarm(swarm);
     }
 }

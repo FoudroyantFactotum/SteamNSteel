@@ -18,7 +18,6 @@ package mod.steamnsteel.entity;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
-import mod.steamnsteel.utility.gson.Exclude;
 import mod.steamnsteel.utility.position.ChunkBlockCoord;
 import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraft.entity.EntityLiving;
@@ -37,11 +36,21 @@ import java.util.WeakHashMap;
 
 public class Swarm<T extends EntityLiving & ISwarmer>
 {
-    @Exclude Class<T> entityClass; //We need this for comparisons
-    @Exclude private World world;
+    public static final String HOME_CHUNK_X = "HomeChunkX";
+    public static final String HOME_CHUNK_Z = "HomeChunkZ";
+    public static final String HOME_BLOCK = "HomeBlock";
+
+    public static final String THREAT = "Threat";
+    public static final String THREAT_NAME = "Name";
+    public static final String THREAT_COUNT = "Count";
+
+    private static final int NBT_TAG_TYPE_COMPOUND = 10;
+
+    transient Class<T> entityClass; //We need this for comparisons
+    transient private World world;
     //private WeakReference<Object> spiderFactory; //TODO implement
     private final Multiset<String> threatCount = HashMultiset.create();
-    @Exclude private final Set<T> swarmerEntities = Collections.newSetFromMap(new WeakHashMap<T, Boolean>());
+    transient private final Set<T> swarmerEntities = Collections.newSetFromMap(new WeakHashMap<T, Boolean>());
     private ChunkCoord homeChunkCoord;
     private ChunkBlockCoord homeBlockCoord; //This could be replaced with the spiderFactory in the future
     private ChunkCoord currPosition;
@@ -71,12 +80,15 @@ public class Swarm<T extends EntityLiving & ISwarmer>
         {
             HashMultiset<String> playersToAdd = HashMultiset.create();
             //Increase threat count for players in home radius
-            for (EntityPlayer player : playerList) {
+            for (EntityPlayer player : playerList)
+            {
                 playersToAdd.add(player.getName());
                 changeThreatCount(player.getName(), 1);
             }
+
             //Decrease threat count for players no longer in home area
-            for (String playerName : threatCount.elementSet()) {
+            for (String playerName : threatCount.elementSet())
+            {
                 if (!playersToAdd.contains(playerName))
                 {
                     threatCount.remove(playerName);
@@ -132,6 +144,7 @@ public class Swarm<T extends EntityLiving & ISwarmer>
         {
             chunkCoords.add(ChunkCoord.of(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posY) >> 4));
         }
+
         currPosition = Multisets.copyHighestCountFirst(chunkCoords).iterator().next(); //Little trick to get the highest count
     }
 
@@ -167,6 +180,7 @@ public class Swarm<T extends EntityLiving & ISwarmer>
         {
             return threatCount.count(name);
         }
+
         return 0;
     }
 
@@ -196,35 +210,39 @@ public class Swarm<T extends EntityLiving & ISwarmer>
 
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
-        homeChunkCoord = ChunkCoord.of(nbtTagCompound.getInteger("HomeChunkX"), nbtTagCompound.getInteger("HomeChunkZ"));
-        homeBlockCoord = ChunkBlockCoord.of(nbtTagCompound.getInteger("HomeBlockX"), nbtTagCompound.getInteger("HomeBlockY"), nbtTagCompound.getInteger("HomeBlockZ"));
+        final int[] coord = nbtTagCompound.getIntArray(HOME_BLOCK);
+
+        homeBlockCoord = ChunkBlockCoord.of(coord[0], coord[1], coord[2]);
+        homeChunkCoord = ChunkCoord.of(nbtTagCompound.getInteger(HOME_CHUNK_X), nbtTagCompound.getInteger(HOME_CHUNK_Z));
 
         //Load threat list
-        NBTTagList threatTagList = nbtTagCompound.getTagList("Threat", 10);
+        final NBTTagList threatTagList = nbtTagCompound.getTagList(THREAT, NBT_TAG_TYPE_COMPOUND);
+
         for (int j = 0; j < threatTagList.tagCount(); ++j)
         {
-            NBTTagCompound tagListEntry = threatTagList.getCompoundTagAt(j);
-            threatCount.setCount(tagListEntry.getString("Name"), tagListEntry.getInteger("Count"));
+            final NBTTagCompound tagListEntry = threatTagList.getCompoundTagAt(j);
+            threatCount.setCount(tagListEntry.getString(THREAT_NAME), tagListEntry.getInteger(THREAT_COUNT));
         }
     }
 
     public void writeToNBT(NBTTagCompound nbtTagCompound)
     {
-        nbtTagCompound.setInteger("HomeChunkX", homeChunkCoord.getX());
-        nbtTagCompound.setInteger("HomeChunkZ", homeChunkCoord.getZ());
-        nbtTagCompound.setInteger("HomeBlockX", homeBlockCoord.getX());
-        nbtTagCompound.setInteger("HomeBlockY", homeBlockCoord.getY());
-        nbtTagCompound.setInteger("HomeBlockZ", homeBlockCoord.getZ());
+        nbtTagCompound.setInteger(HOME_CHUNK_X, homeChunkCoord.getX());
+        nbtTagCompound.setInteger(HOME_CHUNK_Z, homeChunkCoord.getZ());
+        nbtTagCompound.setIntArray(HOME_BLOCK, new int[]{homeBlockCoord.getX(), homeBlockCoord.getY(), homeBlockCoord.getZ()});
 
         //Save threat list
-        NBTTagList threatTagList = new NBTTagList();
+        final NBTTagList threatTagList = new NBTTagList();
+
         for (Multiset.Entry<String> entry : threatCount.entrySet())
         {
-            NBTTagCompound threatEntry = new NBTTagCompound();
-            threatEntry.setString("Name", entry.getElement());
-            threatEntry.setInteger("Count", entry.getCount());
+            final NBTTagCompound threatEntry = new NBTTagCompound();
+
+            threatEntry.setString(THREAT_NAME, entry.getElement());
+            threatEntry.setInteger(THREAT_COUNT, entry.getCount());
         }
-        nbtTagCompound.setTag("Threat", threatTagList);
+
+        nbtTagCompound.setTag(THREAT, threatTagList);
     }
 
     /**

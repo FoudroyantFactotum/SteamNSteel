@@ -16,7 +16,6 @@
 
 package mod.steamnsteel.block.machine.structure;
 
-import com.foudroyantfactotum.tool.structure.block.StructureBlock;
 import com.foudroyantfactotum.tool.structure.coordinates.BlockPosUtil;
 import com.foudroyantfactotum.tool.structure.tileentity.StructureTE;
 import com.foudroyantfactotum.tool.structure.utility.StructureDefinitionBuilder;
@@ -33,7 +32,7 @@ import net.minecraft.world.World;
 
 public class SpiderFactoryStructure extends SteamNSteelStructureBlock
 {
-    public static final String NAME = "spiderFactory";
+    public static final String NAME = "ssSpiderFactory";
 
     public SpiderFactoryStructure()
     {
@@ -49,9 +48,15 @@ public class SpiderFactoryStructure extends SteamNSteelStructureBlock
     }
 
     @Override
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+
+    @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new SpiderFactoryTE(getPattern(), state.getValue(BlockDirectional.FACING), state.getValue(StructureBlock.MIRROR));
+        return new SpiderFactoryTE(getPattern(), state.getValue(BlockDirectional.FACING), false);
     }
 
     @Override
@@ -77,6 +82,11 @@ public class SpiderFactoryStructure extends SteamNSteelStructureBlock
 
         builder.assignConstructionBlocks(
                 new String[]{
+                        " ",
+                        " "
+                },
+                new String[]{
+                        " ",
                         " "
                 }
         );
@@ -95,7 +105,11 @@ public class SpiderFactoryStructure extends SteamNSteelStructureBlock
         );
 
         builder.setCollisionBoxes(
-                new float[]{0.0f,0.0f,0.0f, 1.0f,2.0f,2.0f}
+                new float[]{0.0f,0.0f,0.3f, 0.35f,1.1f,2.0f},//left side
+                new float[]{0.35f,0.0f,0.3f, 0.65f,1.33f,2.0f},//middle
+                new float[]{0.65f,0.0f,0.3f, 1.0f,1.1f,2.0f},//right side
+                new float[]{0.35f,0.0f,0.0f, 0.65f,1.63f,0.3f}//back exhaust
+
         );
 
         return builder;

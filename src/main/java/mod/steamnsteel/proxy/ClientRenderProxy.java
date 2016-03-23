@@ -137,6 +137,7 @@ public class ClientRenderProxy extends CommonRenderProxy
         registerBlockItemModel(ModBlock.ssBoiler);
         registerBlockItemModel(ModBlock.ssBallMill);
         registerBlockItemModel(ModBlock.ssBlastFurnace);
+        registerBlockItemModel(ModBlock.spiderFactory);
 
         registerBlockItemModel(ModBlock.remnantRuinPillar);
         registerBlockItemModel(ModBlock.remnantRuinChest);

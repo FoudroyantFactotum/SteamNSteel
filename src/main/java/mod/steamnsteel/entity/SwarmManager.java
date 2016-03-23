@@ -3,19 +3,25 @@ package mod.steamnsteel.entity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import mod.steamnsteel.utility.gson.AnnotationExlusion;
 import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
+
 import java.util.*;
 
 public class SwarmManager extends WorldSavedData
 {
-    private static final Gson gson = new GsonBuilder().setExclusionStrategies(AnnotationExlusion.INSTANCE).create();
+    private static final Gson gson = new GsonBuilder().create();
     public static final Map<World, SwarmManager> swarmManagers = new HashMap<World, SwarmManager>();
+
+    public static final String SWARMS = "Swarms";
+    public static final String SWARM_TYPE = "SwarmType";
+    public static final String SWARM_DATA = "Data";
+
+    private static final int NBT_TAG_TYPE_COMPOUND = 10;
 
     private World world;
     private int tickCounter;
@@ -30,6 +36,7 @@ public class SwarmManager extends WorldSavedData
     {
         this("swarms");
         this.world = world;
+
         markDirty();
     }
 
@@ -41,7 +48,8 @@ public class SwarmManager extends WorldSavedData
     public void setWorld(World world)
     {
         this.world = world;
-        for (Swarm swarm : swarmList)
+
+        for (final Swarm swarm : swarmList)
         {
             swarm.setWorld(world);
         }
@@ -51,19 +59,26 @@ public class SwarmManager extends WorldSavedData
     {
         world.theProfiler.startSection("swarmUpdate");
         tickCounter++;
-        Iterator<Swarm<? extends ISwarmer>> iterator = swarmList.iterator();
+
+        final Iterator<Swarm<? extends ISwarmer>> iterator = swarmList.iterator();
+
         while (iterator.hasNext())
         {
-            Swarm swarm = iterator.next();
+            final Swarm swarm = iterator.next();
+
             swarm.buildSwarmEntitiesList();
             world.theProfiler.startSection("swarmX" + swarm.getHomeChunkCoord().getX() + ":Z" + swarm.getHomeChunkCoord().getZ());
+
             swarm.update(tickCounter);
+
             if (!swarm.isValid())
             {
                 iterator.remove();
             }
+
             world.theProfiler.endSection();
         }
+
         world.theProfiler.endSection();
 
         //Mark for save every 30 seconds
@@ -84,15 +99,17 @@ public class SwarmManager extends WorldSavedData
     @SuppressWarnings("unchecked")
     public <T extends EntityLiving & ISwarmer> Swarm<T> getNearestSwarmToEntity(T entity, Class<T> clazz, int maxDistance)
     {
-        Swarm<T> nearestSwarm = null;
         double distance = Float.MAX_VALUE;
+        Swarm<T> nearestSwarm = null;
+
         for (Swarm<? extends ISwarmer> swarm : swarmList)
         {
             //Has to exact match
             if (swarm.entityClass == clazz)
             {
-                ChunkCoord coord = swarm.getHomeChunkCoord();
-                double dis = entity.getDistanceSq(coord.getX() + 8, swarm.getHomeBlockCoord().getY(), swarm.getHomeChunkCoord().getZ() + 8);
+                final ChunkCoord coord = swarm.getHomeChunkCoord();
+                final double dis = entity.getDistanceSq(coord.getX() + 8, swarm.getHomeBlockCoord().getY(), swarm.getHomeChunkCoord().getZ() + 8);
+
                 if ((nearestSwarm == null || dis < distance) && dis <= maxDistance)
                 {
                     nearestSwarm = (Swarm<T>) swarm;
@@ -100,6 +117,7 @@ public class SwarmManager extends WorldSavedData
                 }
             }
         }
+
         return nearestSwarm;
     }
 
@@ -110,6 +128,7 @@ public class SwarmManager extends WorldSavedData
         {
             return new Swarm<T>(world, entityClass);
         }
+
         return null;
     }
 
@@ -117,12 +136,15 @@ public class SwarmManager extends WorldSavedData
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
         //Load swarm list
-        NBTTagList nbttaglist = nbtTagCompound.getTagList("Swarms", 10);
+        final NBTTagList nbttaglist = nbtTagCompound.getTagList(SWARMS, NBT_TAG_TYPE_COMPOUND);
+
         for (int i = 0; i < nbttaglist.tagCount(); ++i)
         {
-            NBTTagCompound tagCompound = nbttaglist.getCompoundTagAt(i);
-            SwarmType swarmType = SwarmType.values()[tagCompound.getInteger("SwarmType")];
-            Swarm swarm = gson.fromJson(tagCompound.getString("Data"), swarmType.typeToken.getType());
+            final NBTTagCompound tagCompound = nbttaglist.getCompoundTagAt(i);
+
+            final SwarmType swarmType = SwarmType.values()[tagCompound.getInteger(SWARM_TYPE)];
+            final Swarm swarm = gson.fromJson(tagCompound.getString(SWARM_DATA), swarmType.typeToken.getType());
+
             swarm.readFromNBT(tagCompound);
             addSwarm(swarm);
         }
@@ -132,18 +154,22 @@ public class SwarmManager extends WorldSavedData
     public void writeToNBT(NBTTagCompound nbtTagCompound)
     {
         //Save swarm list
-        NBTTagList nbtTagList = new NBTTagList();
-        for (Swarm swarm : swarmList)
+        final NBTTagList nbtTagList = new NBTTagList();
+
+        for (final Swarm swarm : swarmList)
         {
             if (swarm.shouldPersist())
             {
-                NBTTagCompound swarmNBT = new NBTTagCompound();
-                swarmNBT.setInteger("SwarmType", swarm.getSwarmType().ordinal());
-                swarmNBT.setString("Data", gson.toJson(swarm));
+                final NBTTagCompound swarmNBT = new NBTTagCompound();
+
+                swarmNBT.setInteger(SWARM_TYPE, swarm.getSwarmType().ordinal());
+                swarmNBT.setString(SWARM_DATA, gson.toJson(swarm));
+
                 nbtTagList.appendTag(swarmNBT);
             }
         }
-        nbtTagCompound.setTag("Swarms", nbtTagList);
+
+        nbtTagCompound.setTag(SWARMS, nbtTagList);
     }
 
     public enum SwarmType

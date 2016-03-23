@@ -1,0 +1,57 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "transform": "forge:default-block",
+    "model": "steamnsteel:SSSpiderFactory.ogex",
+    "textures": {
+      "#//D/The Forge/Minecraft/SteamNSteel/Models/Entities/SSSpiderFactory": "steamnsteel:models/SSSpiderFactory",
+      "#//D/The Forge/Minecraft/SteamNSteel/Models/Entities/SSSteamSpider": "steamnsteel:models/SSSteamSpider"
+    },
+    "custom": {
+      "flip-v": true
+    }
+  },
+  "variants": {
+    "normal": [{
+    }],
+    "inventory": [{
+      "transform": {
+        "thirdperson": {
+          "translation": [0.1, 0.05, 0],
+          "rotation": [{"y": 90}, {"z": -20}, {"x": -50}],
+          "scale": 0.4
+        },
+        "firstperson": {
+          "rotation": {"y": -90 },
+          "translation": [0, -0.1, 0.1],
+          "scale": 0.50
+        },
+        "gui": {
+          "translation": [0.5, 0.075, 0.0],
+          "rotation": {"y": 90 },
+          "scale": 0.64
+        }
+      }
+    }],
+    "facing=north": {
+      "model": "steamnsteel:SSSpiderFactory.ogex", "transform": {
+        "translation": [-1, 0, 0],
+        "rotation": {"y":270}
+    }},
+    "facing=east": {
+      "model": "steamnsteel:SSSpiderFactory.ogex", "transform": {
+        "rotation": {"y": 180 },
+        "translation": [0, 0, -1]
+    }},
+    "facing=south": {
+      "model": "steamnsteel:SSSpiderFactory.ogex", "transform": {
+          "rotation": {"y": 90 },
+        "translation": [1, 0, 0]
+    }},
+    "facing=west": {
+      "model": "steamnsteel:SSSpiderFactory.ogex", "transform": {
+        "rotation": {"y": 0 },
+        "translation": [0, 0, 1]
+    }}
+  }
+}
