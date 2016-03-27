@@ -111,7 +111,6 @@ public class Swarm<T extends EntityLiving & ISwarmer>
     {
         this.world = world;
         swarmerEntities.clear();
-        buildSwarmEntitiesList();
     }
 
     public void setAttackTarget(EntityLivingBase entityLiving)
@@ -200,7 +199,7 @@ public class Swarm<T extends EntityLiving & ISwarmer>
      */
     public boolean shouldPersist()
     {
-        return false;
+        return true;
     }
 
     public SwarmManager.SwarmType getSwarmType()
@@ -243,20 +242,5 @@ public class Swarm<T extends EntityLiving & ISwarmer>
         }
 
         nbtTagCompound.setTag(THREAT, threatTagList);
-    }
-
-    /**
-     * Builds up a list of entities that is within the home region for this swarm.
-     * TODO This isn't exactly ideal as if a swarm is moving, the entities that are part of it could be lost. Maybe have ISwarmers save the home coords of the swarm and try and load it that way?
-     */
-    public void buildSwarmEntitiesList()
-    {
-        @SuppressWarnings("unchecked")
-        List<T> entityList = world.getEntitiesWithinAABB(entityClass, AxisAlignedBB.fromBounds(homeChunkCoord.getX(), homeBlockCoord.getY(), homeChunkCoord.getZ(),
-                homeChunkCoord.getX() + 16, homeBlockCoord.getY() + 16, homeChunkCoord.getZ() + 16),
-                entity -> entity.getSwarm() == null
-        );
-
-        swarmerEntities.addAll(entityList);
     }
 }

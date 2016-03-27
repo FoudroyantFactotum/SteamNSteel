@@ -1,7 +1,5 @@
 package mod.steamnsteel.entity;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraft.entity.EntityLiving;
@@ -14,8 +12,7 @@ import java.util.*;
 
 public class SwarmManager extends WorldSavedData
 {
-    private static final Gson gson = new GsonBuilder().create();
-    public static final Map<World, SwarmManager> swarmManagers = new HashMap<World, SwarmManager>();
+    public static final Map<World, SwarmManager> swarmManagers = new HashMap<>();
 
     public static final String SWARMS = "Swarms";
     public static final String SWARM_TYPE = "SwarmType";
@@ -55,6 +52,19 @@ public class SwarmManager extends WorldSavedData
         }
     }
 
+    public <T extends EntityLiving & ISwarmer> Swarm<T> getSwarmAt(ChunkCoord chunk, Class<T> clazz)
+    {
+        for (Swarm swarm : swarmList)
+        {
+            if (swarm.entityClass == clazz && swarm.getHomeChunkCoord().equals(chunk))
+            {
+                return swarm;
+            }
+        }
+
+        return null;
+    }
+
     public void tick()
     {
         world.theProfiler.startSection("swarmUpdate");
@@ -66,7 +76,6 @@ public class SwarmManager extends WorldSavedData
         {
             final Swarm swarm = iterator.next();
 
-            swarm.buildSwarmEntitiesList();
             world.theProfiler.startSection("swarmX" + swarm.getHomeChunkCoord().getX() + ":Z" + swarm.getHomeChunkCoord().getZ());
 
             swarm.update(tickCounter);
@@ -97,7 +106,7 @@ public class SwarmManager extends WorldSavedData
      * @return The swarm
      */
     @SuppressWarnings("unchecked")
-    public <T extends EntityLiving & ISwarmer> Swarm<T> getNearestSwarmToEntity(T entity, Class<T> clazz, int maxDistance)
+    public <T extends EntityLiving & ISwarmer> Swarm<T> getNearestSwarmToEntity(T entity, Class<T> clazz, float maxDistance)
     {
         double distance = Float.MAX_VALUE;
         Swarm<T> nearestSwarm = null;
@@ -108,7 +117,7 @@ public class SwarmManager extends WorldSavedData
             if (swarm.entityClass == clazz)
             {
                 final ChunkCoord coord = swarm.getHomeChunkCoord();
-                final double dis = entity.getDistanceSq(coord.getX() + 8, swarm.getHomeBlockCoord().getY(), swarm.getHomeChunkCoord().getZ() + 8);
+                final double dis = entity.getDistanceSq(coord.getX()*16 + 8, swarm.getHomeBlockCoord().getY(), coord.getZ()*16 + 8);
 
                 if ((nearestSwarm == null || dis < distance) && dis <= maxDistance)
                 {
@@ -126,7 +135,7 @@ public class SwarmManager extends WorldSavedData
         //TODO remove hardcode? subclasses?
         if (entityClass == SteamSpiderEntity.class)
         {
-            return new Swarm<T>(world, entityClass);
+            return new Swarm<>(world, entityClass);
         }
 
         return null;
@@ -143,9 +152,11 @@ public class SwarmManager extends WorldSavedData
             final NBTTagCompound tagCompound = nbttaglist.getCompoundTagAt(i);
 
             final SwarmType swarmType = SwarmType.values()[tagCompound.getInteger(SWARM_TYPE)];
-            final Swarm swarm = gson.fromJson(tagCompound.getString(SWARM_DATA), swarmType.typeToken.getType());
+            final Swarm swarm = getSwarmForClass(swarmType.typeToken.getRawType());
 
-            swarm.readFromNBT(tagCompound);
+            swarm.entityClass = swarmType.typeToken.getRawType();
+            swarm.readFromNBT(tagCompound.getCompoundTag(SWARM_DATA));
+
             addSwarm(swarm);
         }
     }
@@ -161,9 +172,12 @@ public class SwarmManager extends WorldSavedData
             if (swarm.shouldPersist())
             {
                 final NBTTagCompound swarmNBT = new NBTTagCompound();
+                final NBTTagCompound swarmInternalNBT = new NBTTagCompound();
+
+                swarm.writeToNBT(swarmInternalNBT);
 
                 swarmNBT.setInteger(SWARM_TYPE, swarm.getSwarmType().ordinal());
-                swarmNBT.setString(SWARM_DATA, gson.toJson(swarm));
+                swarmNBT.setTag(SWARM_DATA, swarmInternalNBT);
 
                 nbtTagList.appendTag(swarmNBT);
             }
@@ -174,7 +188,7 @@ public class SwarmManager extends WorldSavedData
 
     public enum SwarmType
     {
-        STEAMSPIDERSWARM(new TypeToken<Swarm<SteamSpiderEntity>>(){});
+        STEAMSPIDERSWARM(new TypeToken<SteamSpiderEntity>(){});
 
         public final TypeToken typeToken;
 

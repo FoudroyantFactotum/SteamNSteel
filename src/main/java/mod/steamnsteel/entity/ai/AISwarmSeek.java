@@ -13,7 +13,7 @@ public class AISwarmSeek<T extends EntityLiving & ISwarmer> extends AISwarmBase<
     private final int maxRetries;
     private final int sleepTime;
     private final boolean formOnFail;
-    private int currRange;
+    private float currRange;
     private int currSeekTime;
     private int retries;
     private long lastTryTime;
@@ -54,7 +54,7 @@ public class AISwarmSeek<T extends EntityLiving & ISwarmer> extends AISwarmBase<
     @Override
     public boolean continueExecuting()
     {
-        return shouldExecute() && currSeekTime < maxSeekTime;
+        return (shouldExecute() && currSeekTime < maxSeekTime);
     }
 
     @Override
@@ -76,11 +76,21 @@ public class AISwarmSeek<T extends EntityLiving & ISwarmer> extends AISwarmBase<
         if (swarm != null)
         {
             entity.setSwarm(swarm);
+
+            /*if (entity.getNavigator().noPath())
+            {
+                entity.getNavigator().tryMoveToXYZ(
+                        (swarm.getHomeChunkCoord().getX() * 16) + entity.getRNG().nextInt(16),
+                        swarm.getHomeBlockCoord().getY(),
+                        (swarm.getHomeChunkCoord().getZ() * 16) + entity.getRNG().nextInt(16),
+                        1.0f
+                );
+            }*/
         }
         else
         {
             currSeekTime++;
-            currRange += (maxRange - startRange) / maxSeekTime;
+            currRange += (maxRange - startRange) / (float)maxSeekTime;
 
             //If formOnFail is true, this is our last attempt so attempt to form a spawn ourself
             if (currSeekTime >= maxSeekTime && retries >= maxRetries && formOnFail)

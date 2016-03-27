@@ -28,8 +28,10 @@ abstract class AISwarmBase<T extends EntityLiving & ISwarmer> extends EntityAIBa
     }
 
     @SuppressWarnings("unchecked")
-    protected List<EntityPlayer> getNearbyThreats(ChunkCoord homeChunk, int range) {
+    protected List<EntityPlayer> getNearbyThreats(ChunkCoord homeChunk, int range)
+    {
         ChunkBlockCoord homeBlockCoord = entity.getSwarm().getHomeBlockCoord();
+
         return entity.worldObj.getEntitiesWithinAABB(EntityPlayer.class,
                 AxisAlignedBB.fromBounds((homeChunk.getX() * 16) - range, homeBlockCoord.getY() - 16, (homeChunk.getZ() * 16) - range,
                         (homeChunk.getX() * 16) + 16 + range, homeBlockCoord.getY() + 16, (homeChunk.getZ() * 16) + 16 + range), selector);

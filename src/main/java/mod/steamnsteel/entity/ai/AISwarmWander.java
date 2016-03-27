@@ -30,6 +30,16 @@ public class AISwarmWander<T extends EntityCreature & ISwarmer> extends AISwarmB
     @Override
     public boolean shouldExecute()
     {
+        if (entity.getSwarm() != null)
+        if ((entity.getPosition().getX() >> 4) != entity.getSwarm().getHomeChunkCoord().getX() ||
+                (entity.getPosition().getZ() >> 4) != entity.getSwarm().getHomeChunkCoord().getZ())
+        {
+            entity.setCustomNameTag("OUT OF BOUNDS " + entity.getSwarm().getHomeChunkCoord());
+        }else
+        {
+            entity.setCustomNameTag("IN SWARM " + entity.getSwarm().getHomeChunkCoord());
+        }
+
         if (entity.getNavigator().noPath() && entity.getRNG().nextInt(chance) == 0)
         {
             Vec3 target = findRandomTarget();
@@ -60,20 +70,15 @@ public class AISwarmWander<T extends EntityCreature & ISwarmer> extends AISwarmB
     {
         if (entity.getSwarm() != null)
         {
-            //        for (int tries = 0; tries < 10; tries++)
-//        {
             double x = (entity.getSwarm().getHomeChunkCoord().getX() * 16) + entity.getRNG().nextInt(16);
             double z = (entity.getSwarm().getHomeChunkCoord().getZ() * 16) + entity.getRNG().nextInt(16);
             double y = entity.getSwarm().getHomeBlockCoord().getY() + MathHelper.getRandomDoubleInRange(entity.getRNG(), -3, 3);
 
-            //PathEntity path = entity.getNavigator().getPathToXYZ(x, y, z);
-            //if (path != null)
-            //{
             return new Vec3(x, y, z);
-            //}
-//        }
-//        return null;
         }
-        else return RandomPositionGenerator.findRandomTarget(entity, 16, 4);
+        else
+        {
+            return RandomPositionGenerator.findRandomTarget(entity, 16, 4);
+        }
     }
 }

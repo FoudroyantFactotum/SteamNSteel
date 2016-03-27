@@ -19,7 +19,7 @@ public class SteamNSteelLivingRender extends RenderLiving
         this.texture = getResourceLocation(name);
     }
 
-    static ResourceLocation getResourceLocation(String name)
+    public static ResourceLocation getResourceLocation(String name)
     {
         return new ResourceLocation(TheMod.MOD_ID.toLowerCase(), getTexturePath(name));
     }

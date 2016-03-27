@@ -1,34 +1,32 @@
 package mod.steamnsteel.utility.event;
 
-import mod.steamnsteel.entity.SteamSpiderEntity;
-import mod.steamnsteel.entity.Swarm;
 import mod.steamnsteel.entity.SwarmManager;
-import mod.steamnsteel.utility.position.ChunkBlockCoord;
-import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ServerEventHandler
 {
+    public static final String SWARM = "swarms";
+
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event)
     {
         if (!event.world.isRemote)
         {
-            SwarmManager swarmManager = (SwarmManager) event.world.getPerWorldStorage().loadData(SwarmManager.class, "swarms");
+            SwarmManager swarmManager = (SwarmManager) event.world.getPerWorldStorage().loadData(SwarmManager.class, SWARM);
+
             if (swarmManager == null)
             {
                 swarmManager = new SwarmManager(event.world);
-                event.world.getPerWorldStorage().setData("swarms", swarmManager);
+                event.world.getPerWorldStorage().setData(SWARM, swarmManager);
             }
             else
             {
                 swarmManager.setWorld(event.world);
             }
+
             SwarmManager.swarmManagers.put(event.world, swarmManager);
-            Swarm swarm = new Swarm<SteamSpiderEntity>(event.world, ChunkCoord.of(0, 0), ChunkBlockCoord.of(0, 0, 0), SteamSpiderEntity.class);
-            swarmManager.addSwarm(swarm);
         }
     }
 
@@ -37,7 +35,9 @@ public class ServerEventHandler
     {
         if (!event.world.isRemote)
         {
-            SwarmManager.swarmManagers.remove(event.world);
+            SwarmManager sm = SwarmManager.swarmManagers.remove(event.world);
+
+            event.world.getPerWorldStorage().setData(SWARM, sm);
         }
     }
 

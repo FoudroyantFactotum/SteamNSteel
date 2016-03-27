@@ -1,31 +1,46 @@
 package mod.steamnsteel.client.renderer.model;
 
 import mod.steamnsteel.entity.SteamSpiderEntity;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
+
 //This has to extend ModelBase so we can use RenderLivingEntity without attempting to roll our own.
-/*@SideOnly(Side.CLIENT)
-public class SteamSpiderModel extends ModelBase
+@SideOnly(Side.CLIENT)
+public class SteamSpiderModel extends SteamNSteelEntityModel
 {
-    private static final ResourceLocation MODEL = SteamNSteelModel.getResourceLocation(SteamNSteelModel.getModelPath(SteamSpiderEntity.NAME));
-    private static final Vec3 rightLegsRotVec = Vec3.createVectorHelper(0.15, -1.25, 0);
-    private static final Vec3 leftLegsRotVec = Vec3.createVectorHelper(-0.15, -1.25, 0);
-    private final WavefrontObject model;
+    private static final ResourceLocation MODEL = getResourceLocation(SteamSpiderEntity.NAME);
+    private static final Vec3 rightLegsRotVec = new Vec3(0.15, -1.25, 0);
+    private static final Vec3 leftLegsRotVec = new Vec3(-0.15, -1.25, 0);
+    private IFlexibleBakedModel model;
     private float jumpLegAngle;
 
     public SteamSpiderModel()
     {
-        model = (WavefrontObject) AdvancedModelLoader.loadModel(MODEL);
+        try
+        {
+            final IModel nbm = OBJLoader.instance.loadModel(MODEL);
+
+            model = nbm.bake(nbm.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -35,10 +50,16 @@ public class SteamSpiderModel extends ModelBase
         float angle2 = MathHelper.cos(limbSwing * 1.5F + (float)Math.PI) * 0.2F * limbSwingAmount - 0.2F;
         GL11.glPushMatrix();
 
-        Tessellator tessellator = Tessellator.instance;
-        Tessellator.instance.startDrawing(GL11.GL_TRIANGLES);
+        final Tessellator tessellator = Tessellator.getInstance();
+
+        tessellator.getWorldRenderer().begin(GL11.GL_TRIANGLES, model.getFormat());
+
+        for (final BakedQuad q : model.getGeneralQuads())
+        {
+            tessellator.getWorldRenderer().addVertexData(q.getVertexData());
+        }
         //Disable colour if taking damage to allow it to properly show damage effect
-        if (((EntityLivingBase) entity).hurtTime > 0 || ((EntityLivingBase) entity).deathTime > 0) tessellator.disableColor();
+       /* if (((EntityLivingBase) entity).hurtTime > 0 || ((EntityLivingBase) entity).deathTime > 0) tessellator.disableColor();
 
         float bob = (float) Math.cos(entity.ticksExisted) / 200F;
         tessellator.addTranslation(0F, bob, 0F);
@@ -71,7 +92,7 @@ public class SteamSpiderModel extends ModelBase
 
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        tessellator.setTranslation(0, 0, 0);
+        tessellator.setTranslation(0, 0, 0);*/
         tessellator.draw();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
@@ -84,7 +105,7 @@ public class SteamSpiderModel extends ModelBase
         jumpLegAngle = MathHelper.clamp_float(-2.4F + (interPosY * 3F), -1F, 1F);
     }
 
-    //Requires radians
+    /*//Requires radians
     private void tessellateWithRotations(GroupObject group, Tessellator tessellator, float rotX, float rotY, float rotZ, Vec3 rotationPoint)
     {
         if (group.faces.size() > 0)
@@ -149,6 +170,5 @@ public class SteamSpiderModel extends ModelBase
                 }
             }
         }
-    }
+    }*/
 }
-*/

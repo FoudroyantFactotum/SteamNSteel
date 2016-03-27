@@ -2,6 +2,7 @@ package mod.steamnsteel.entity;
 
 import mod.steamnsteel.entity.ai.*;
 import mod.steamnsteel.proxy.Proxies;
+import mod.steamnsteel.utility.position.ChunkCoord;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -11,13 +12,18 @@ import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAttackMob
 {
-    public static final String NAME = "steamSpider";
+    public static final String NAME = "SSSteamSpider";
+
+    public static final String SWARM_HOME = "swarmHome";
+
+
     private Swarm swarm;
 
     public SteamSpiderEntity(World world)
@@ -32,7 +38,7 @@ public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAtt
         tasks.addTask(4, new AISwarmWander<SteamSpiderEntity>(this, 60, 1.0F));
         //tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         //tasks.addTask(8, new EntityAILookIdle(this));
-        tasks.addTask(8, new AISwarmSeek<SteamSpiderEntity>(this, 0, 50, 100, 3, 1200, false)); //This should be removed if we want spiders to become "dumb" when their host is killed
+        tasks.addTask(8, new AISwarmSeek<SteamSpiderEntity>(this, 0, 500, 100, 3, 1200, false)); //This should be removed if we want spiders to become "dumb" when their host is killed
         targetTasks.addTask(1, new AISwarmOnHurt<SteamSpiderEntity>(this));
         targetTasks.addTask(2, new AISwarmDefendHome<SteamSpiderEntity>(this, 16));
         setSize(0.35F, 0.8F);
@@ -135,7 +141,45 @@ public class SteamSpiderEntity extends EntityMob implements ISwarmer, IRangedAtt
         }
 
         this.swarm = swarm;
-        swarm.addEntity(this);
+        if (swarm != null)
+        {
+            swarm.addEntity(this);
+        }
+    }
+
+    @Override
+    public boolean canBreatheUnderwater()
+    {
+        return true;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tagCompund)
+    {
+        super.writeToNBT(tagCompund);
+
+        if (swarm != null)
+            tagCompund.setIntArray(SWARM_HOME, new int[]{swarm.getHomeChunkCoord().getX(), swarm.getHomeChunkCoord().getZ()});
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tagCompund)
+    {
+        super.readFromNBT(tagCompund);
+
+        if (tagCompund.hasKey(SWARM_HOME))
+        {
+            final int[] uChunkLoc = tagCompund.getIntArray(SWARM_HOME);
+            final ChunkCoord chunk = ChunkCoord.of(uChunkLoc[0], uChunkLoc[1]);
+
+            final Swarm<SteamSpiderEntity> swarm = SwarmManager.swarmManagers.get(this.worldObj).getSwarmAt(chunk, SteamSpiderEntity.class);
+
+            if (swarm != null)
+            {
+                setSwarm(swarm);
+                swarm.addEntity(this);
+            }
+        }
     }
 
     @Override

@@ -20,12 +20,15 @@ import com.foudroyantfactotum.tool.structure.StructureRegistry;
 import mod.steamnsteel.api.CraftingManager;
 import mod.steamnsteel.api.SteamNSteelInitializedEvent;
 import mod.steamnsteel.commands.CommandCreateSwarm;
+import mod.steamnsteel.commands.CommandDestroyEntities;
 import mod.steamnsteel.commands.CommandSpawnEntity;
 import mod.steamnsteel.configuration.ConfigurationHandler;
 import mod.steamnsteel.crafting.Recipes;
 import mod.steamnsteel.gui.GuiHandler;
 import mod.steamnsteel.library.*;
 import mod.steamnsteel.proxy.Proxies;
+import mod.steamnsteel.utility.event.ServerEventHandler;
+import mod.steamnsteel.world.ChunkWorldType;
 import mod.steamnsteel.world.LoadSchematicFromFileCommand;
 import mod.steamnsteel.world.LoadSchematicFromResourceCommand;
 import mod.steamnsteel.world.WorldGen;
@@ -83,6 +86,8 @@ public class TheMod
 
         MinecraftForge.EVENT_BUS.register(ConfigurationHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ModCrafting.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+        new ChunkWorldType(); //todo remove
 
         StructureRegistry.loadRegisteredPatterns();
 
@@ -111,6 +116,7 @@ public class TheMod
 
         event.registerServerCommand(new CommandSpawnEntity());
         event.registerServerCommand(new CommandCreateSwarm());
+        event.registerServerCommand(new CommandDestroyEntities());
     }
 
     @Mod.EventHandler

@@ -23,8 +23,11 @@ import mod.steamnsteel.client.codemodel.PipeModel;
 import mod.steamnsteel.client.fx.SteamParticle;
 import mod.steamnsteel.client.model.opengex.OpenGEXModelLoader;
 import mod.steamnsteel.client.model.pct.PCTModelLoader;
+import mod.steamnsteel.client.renderer.entity.SteamNSteelLivingRender;
+import mod.steamnsteel.client.renderer.model.SteamSpiderModel;
 import mod.steamnsteel.client.renderer.tileentity.LargeFanTESR;
 import mod.steamnsteel.client.renderer.tileentity.OgexStructureTESR;
+import mod.steamnsteel.entity.SteamSpiderEntity;
 import mod.steamnsteel.library.ModBlock;
 import mod.steamnsteel.library.ModItem;
 import mod.steamnsteel.texturing.wall.RemnantRuinFloorSideTexture;
@@ -47,6 +50,7 @@ import net.minecraftforge.client.model.b3d.B3DLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings({"MethodMayBeStatic", "WeakerAccess"})
@@ -61,6 +65,8 @@ public class ClientRenderProxy extends CommonRenderProxy
         registerConnectedTextures();
 
         registerEventHandlers();
+
+        registerEntityRenderers();
 
         OpenGEXModelLoader.instance.addDomain(TheMod.MOD_ID);
         OBJLoader.instance.addDomain(TheMod.MOD_ID);
@@ -238,6 +244,19 @@ public class ClientRenderProxy extends CommonRenderProxy
         ClientRegistry.bindTileEntitySpecialRenderer(BallMillTE.class, new OgexStructureTESR());
         ClientRegistry.bindTileEntitySpecialRenderer(BlastFurnaceTE.class, STESR);
         ClientRegistry.bindTileEntitySpecialRenderer(SpiderFactoryTE.class, STESR);
+    }
+
+    private void registerEntityRenderers()
+    {
+        RenderingRegistry.registerEntityRenderingHandler(
+                SteamSpiderEntity.class,
+                manager -> new SteamNSteelLivingRender(
+                        manager,
+                        new SteamSpiderModel(),
+                        SteamSpiderEntity.NAME,
+                        0.5f
+                )
+        );
     }
 
     private void registerEventHandlers()

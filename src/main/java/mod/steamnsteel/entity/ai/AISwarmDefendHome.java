@@ -19,20 +19,25 @@ public class AISwarmDefendHome<T extends EntityCreature & ISwarmer> extends AISw
     @Override
     public boolean shouldExecute()
     {
-        if (super.shouldExecute() && entity.getAttackTarget() == null) {
-            List<EntityPlayer> playerList = getNearbyThreats(entity.getSwarm().getHomeChunkCoord(), range);
+        if (super.shouldExecute() && entity.getAttackTarget() == null)
+        {
+            final List<EntityPlayer> playerList = getNearbyThreats(entity.getSwarm().getHomeChunkCoord(), range);
+
             return (playerList != null && playerList.size() > 0);
         }
+
         return false;
     }
 
     @Override
     public void startExecuting()
     {
-        List<EntityPlayer> playerList = getNearbyThreats(entity.getSwarm().getHomeChunkCoord(), range);
-        if (playerList != null) {
-            ChunkCoord homeChunk = entity.getSwarm().getHomeChunkCoord();
-            BlockPos worldBlockCoord = homeChunk.localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
+        final List<EntityPlayer> playerList = getNearbyThreats(entity.getSwarm().getHomeChunkCoord(), range);
+
+        if (playerList != null)
+        {
+            final ChunkCoord homeChunk = entity.getSwarm().getHomeChunkCoord();
+            final BlockPos worldBlockCoord = homeChunk.localToWorldCoords(entity.getSwarm().getHomeBlockCoord());
 
             //Get closest player. TODO should we have better threat determining? Look in Swarm
             EntityPlayer closestPlayer = null;
