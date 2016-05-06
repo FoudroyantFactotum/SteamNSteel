@@ -19,21 +19,27 @@ package mod.steamnsteel.world;
 import com.google.common.collect.Lists;
 import mod.steamnsteel.configuration.Settings;
 import mod.steamnsteel.library.ModBlock;
+import mod.steamnsteel.utility.log.Logger;
 import mod.steamnsteel.world.ore.NiterOreGenerator;
 import mod.steamnsteel.world.ore.OreGenerator;
 import mod.steamnsteel.world.ore.RetroGenHandler;
 import mod.steamnsteel.world.ore.SulfurOreGenerator;
+import mod.steamnsteel.world.orenodes.SteamNSteelDecorator;
+import mod.steamnsteel.world.orenodes.SteamNSteelWorldType;
 import mod.steamnsteel.world.structure.RemnantRuinsGenerator;
 import mod.steamnsteel.world.structure.StructureChunkGenerator;
 import mod.steamnsteel.world.structure.StructureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.terraingen.BiomeEvent;
 import net.minecraftforge.event.terraingen.OreGenEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.List;
 
@@ -48,6 +54,8 @@ public enum WorldGen
 
     public static SchematicLoader schematicLoader = new SchematicLoader();
 
+    public static SteamNSteelWorldType steamNSteelWorldType = new SteamNSteelWorldType();
+
     public static void init()
     {
         createOreGenerators();
@@ -58,6 +66,7 @@ public enum WorldGen
     private static void register() {
         MinecraftForge.ORE_GEN_BUS.register(INSTANCE);
         MinecraftForge.EVENT_BUS.register(INSTANCE);
+        MinecraftForge.TERRAIN_GEN_BUS.register(INSTANCE);
     }
 
     private static void createOreGenerators()
@@ -107,7 +116,6 @@ public enum WorldGen
         structureGens.add(ruinsGenerator);
     }
 
-
     @SuppressWarnings("MethodMayBeStatic")
     @SubscribeEvent
     public void OnPostOreGenerated(OreGenEvent.Post event)
@@ -126,6 +134,26 @@ public enum WorldGen
             StructureChunkGenerator structureToGenerate = structureGen.getStructureChunkToGenerate(event.world, event.chunkX, event.chunkZ);
             if (structureToGenerate != null) {
                 structureToGenerate.generate();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void OnCreateDecorator(BiomeEvent.CreateDecorator event)
+    {
+        event.newBiomeDecorator = new SteamNSteelDecorator(event.originalBiomeDecorator);
+    }
+
+    long count = 0;
+
+    @SubscribeEvent
+    public void OnTick(TickEvent event)
+    {
+        if (event.side == Side.SERVER && event.phase == TickEvent.Phase.END)
+        {
+            if (count++ % 50 == 0)
+            {
+                Logger.info("" + SteamNSteelWorldType.oreSeamWorldData);
             }
         }
     }

@@ -15,13 +15,13 @@
  */
 package mod.steamnsteel.item.tool;
 
-import com.foudroyantfactotum.tool.structure.item.BuildFormTool;
+import com.foudroyantfactotum.tool.structure.item.StructureItemForm;
 import mod.steamnsteel.TheMod;
 import mod.steamnsteel.library.Material;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.text.WordUtils;
 
-public class StructureBuild extends BuildFormTool
+public class StructureBuild extends StructureItemForm
 {
     private final String undecoratedName;
 
